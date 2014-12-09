@@ -1,12 +1,8 @@
 package mc.alk.arena.plugins.worldguard;
 
 import mc.alk.arena.plugins.worldedit.WorldEditUtil;
-import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalPlayer;
-import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.selections.Polygonal2DSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -59,8 +55,11 @@ public abstract class WorldGuardInterface {
         if (wg.isCompatible("6") && wg.isSupported("6.99")) {
             // mc.alk.arena.plugins.worldguard.{version}.WG
             WGI = instantiate("v6");
-        } else {
+        } else if (wg.isCompatible("5") && wg.isSupported("5.99")) {
             WGI = instantiate("v5");
+        } else {
+            // Not present, not compatible, or not supported.
+            WGI = instantiate("v0");
         }
         return WGI;
     }

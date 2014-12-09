@@ -124,7 +124,7 @@ public class WG extends WorldGuardInterface {
                 // print(player,filePath + " loaded");
             }
             session.getClipboard().paste(editSession, pos, false, true);
-            //			WorldEdit.logger.info(player.getName() + " pasted schematic" + filePath +"  at " + pos);
+            // WorldEdit.logger.info(player.getName() + " pasted schematic" + filePath +"  at " + pos);
         } catch (DataException e) {
             printError(player, "Load error: " + e.getMessage());
         } catch (IOException e) {
