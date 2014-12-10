@@ -1,6 +1,5 @@
 package mc.alk.arena.plugins.worldguard.v6;
 
-import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.EmptyClipboardException;
 import com.sk89q.worldedit.LocalConfiguration;
@@ -36,7 +35,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mc.alk.arena.plugins.worldedit.WorldEditUtil;
-import mc.alk.arena.plugins.worldguard.WorldGuardInterface;
+import mc.alk.arena.plugins.worldguard.WorldGuardAbstraction;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
@@ -53,7 +52,7 @@ import org.bukkit.command.CommandSender;
  *
  * @author Nikolai
  */
-public class WG extends WorldGuardInterface {
+public class WG extends WorldGuardAbstraction {
 
     @Override
     public boolean saveSchematic(org.bukkit.entity.Player p, String schematicName) {

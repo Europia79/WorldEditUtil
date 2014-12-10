@@ -21,7 +21,7 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 import java.io.File;
 import java.io.IOException;
 import mc.alk.arena.plugins.worldedit.WorldEditUtil;
-import mc.alk.arena.plugins.worldguard.WorldGuardInterface;
+import mc.alk.arena.plugins.worldguard.WorldGuardAbstraction;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
  *
  * @author Alkarin
  */
-public class WG extends WorldGuardInterface {
+public class WG extends WorldGuardAbstraction {
 
     @Override
     public boolean saveSchematic(Player p, String schematicName) {
