@@ -27,7 +27,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- *
+ * The WorldEdit v5.x implementation.
+ * 
+ * Why does this exist under the WorldGuard Utilities ?
+ * Because intention of saveSchematic() is really saveRegion().
+ * And the intention of pasteSchematic() is really resetRegion().
  *
  * @author Alkarin
  */

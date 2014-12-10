@@ -3,15 +3,11 @@ package mc.alk.arena.plugins.worldguard.v6;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.EmptyClipboardException;
 import com.sk89q.worldedit.LocalConfiguration;
-import com.sk89q.worldedit.LocalPlayer;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.ServerInterface;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitCommandSender;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.command.SchematicCommands;
@@ -40,15 +36,11 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
 /**
- * Not finished.
- *
- * Self reminder: In order to fix the compiler errors and incompatibilities with
- * WorldEdit v6.0.0, I recommend working backwards from loadAndPaste() first,
- * then moving to the calling code, pasteSchematic().
- *
- * The reason for working backwards is because the meat of what has to be done
- * is clipboard.paste(). So we first need to find the WE v6 equivalent in the
- * API, then constructing the necessary arguments to satisfy a paste() call.
+ * The WorldEdit v6.x implementation.
+ * 
+ * Why does this exist under the WorldGuard Utilities ?
+ * Because intention of saveSchematic() is really saveRegion().
+ * And the intention of pasteSchematic() is really resetRegion().
  *
  * @author Nikolai
  */
@@ -171,32 +163,4 @@ public class WG extends WorldGuardAbstraction {
         }
         return true;
     }
-
-    private void printError(LocalPlayer player, String msg) {
-        if (player == null) {
-            System.out.println(msg);
-        } else {
-            player.printError(msg);
-        }
-    }
-
-    public class ConsolePlayer extends BukkitCommandSender {
-
-        LocalWorld world;
-
-        public ConsolePlayer(WorldEditPlugin plugin, ServerInterface server, CommandSender sender, World w) {
-            super(plugin, sender);
-            world = BukkitUtil.getLocalWorld(w);
-        }
-
-        @Override
-        public boolean isPlayer() {
-            return true;
-        }
-
-        public LocalWorld getWorld() {
-            return world;
-        }
-    }
-
 }

@@ -20,7 +20,7 @@ import org.bukkit.plugin.Plugin;
  * We want to always reference an abstraction of WorldGuard and have the 
  * actual implementation decided at runtime: v0, v5, v6. <br/><br/>
  * 
- * v0 = WG not installed, not compatible, or not supported. <br/>
+ * v0 = WorldEdit not installed, not compatible, or not supported. <br/>
  * v0 = vZero, not vOH.
  * 
  * This class was a conversion from the static wrapper WorldGuardUtil.
@@ -33,15 +33,14 @@ public abstract class WorldGuardInterface {
     /**
      * Instantiates: mc.alk.arena.plugins.worldguard.{version}.WG.
      * 
-     * sk89q uses a semantic versioning scheme, so we can be confident that
-     * any future v7.x will likely NOT be compatible with v6.x
+     * Based on the version of WorldEdit that the server has.
      */
     public static WorldGuardInterface newInstance() {
         WorldGuardInterface WGI = null;
-        Version<Plugin> wg = VersionFactory.getPluginVersion("WorldGuard");
-        if (wg.isCompatible("6") && wg.isLessThan("7")) {
+        Version<Plugin> we = VersionFactory.getPluginVersion("WorldEdit");
+        if (we.isCompatible("6")) {
             WGI = instantiate("v6");
-        } else if (wg.isCompatible("5")) {
+        } else if (we.isCompatible("5")) {
             WGI = instantiate("v5");
         } else {
             // Not present, not compatible, or not supported.
