@@ -107,7 +107,7 @@ public class WG extends WorldGuardAbstraction {
     public boolean loadAndPaste(String schematic, WorldEdit we,
             LocalSession session, WorldData worldData, EditSession editSession, Vector location) throws FilenameException {
 
-        String filename = schematic;
+        String filename = schematic + ".schematic";
         LocalConfiguration config = we.getConfiguration();
 
         File dir = we.getWorkingDirectoryFile(config.saveDir);
