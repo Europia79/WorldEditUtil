@@ -38,12 +38,15 @@ public abstract class WorldGuardInterface {
     public static WorldGuardInterface newInstance() {
         WorldGuardInterface WGI = null;
         Version<Plugin> we = VersionFactory.getPluginVersion("WorldEdit");
-        if (we.isCompatible("6")) {
+        Version<Plugin> wg = VersionFactory.getPluginVersion("WorldGuard");
+        boolean beta = wg.toString().contains("6.0.0-beta");
+        if (we.isCompatible("6") && wg.isEnabled() && !beta) {
             WGI = instantiate("v6");
-        } else if (we.isCompatible("5")) {
+        } else if (we.isCompatible("5") && wg.isEnabled() && !beta) {
             WGI = instantiate("v5");
         } else {
             // Not present, not compatible, or not supported.
+            System.out.println("WG/WE not present, not compatible, or not supported.");
             WGI = instantiate("v0");
         }
         return WGI;
