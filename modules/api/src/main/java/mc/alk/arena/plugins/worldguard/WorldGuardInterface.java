@@ -1,15 +1,21 @@
 package mc.alk.arena.plugins.worldguard;
 
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mc.alk.arena.objects.exceptions.RegionNotFound;
 import mc.alk.arena.objects.regions.ArenaRegion;
 import mc.alk.arena.objects.regions.WorldGuardRegion;
+import mc.euro.version.Tester;
 import mc.euro.version.Version;
 import mc.euro.version.VersionFactory;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -39,14 +45,36 @@ public abstract class WorldGuardInterface {
         WorldGuardInterface WGI = null;
         Version<Plugin> we = VersionFactory.getPluginVersion("WorldEdit");
         Version<Plugin> wg = VersionFactory.getPluginVersion("WorldGuard");
-        boolean beta = wg.toString().contains("6.0.0-beta");
-        if (we.isCompatible("6") && wg.isEnabled() && !beta) {
+        WorldGuardPlugin wgp = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
+        Tester<WorldGuardPlugin> tester = new Tester<WorldGuardPlugin>() {
+
+            @Override
+            public boolean isEnabled(WorldGuardPlugin wgp) {
+                if (wgp == null) return false;
+                Field[] fields = wgp.getClass().getDeclaredFields();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    try {
+                        if (field.get(wgp) == null) {
+                            return false;
+                        }
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(WorldGuardInterface.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(WorldGuardInterface.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                return true;
+            }
+        };
+        boolean wgIsInitialized = tester.isEnabled(wgp);
+        if (we.isCompatible("6") && wg.isEnabled() && wgIsInitialized) {
             WGI = instantiate("v6");
-        } else if (we.isCompatible("5") && wg.isEnabled() && !beta) {
+        } else if (we.isCompatible("5") && wg.isEnabled() && wgIsInitialized) {
             WGI = instantiate("v5");
         } else {
             // Not present, not compatible, or not supported.
-            System.out.println("WG/WE not present, not compatible, or not supported.");
+            System.out.println("[BattleArena] WG/WE not present, not compatible, or not supported.");
             WGI = instantiate("v0");
         }
         return WGI;
