@@ -56,6 +56,8 @@ public abstract class WorldGuardInterface {
                     field.setAccessible(true);
                     try {
                         if (field.get(wgp) == null) {
+                            System.out.println("[BattleArena] WorldGuard is not fully initialized.");
+                            System.out.println("[BattleArena] WorldGuard field " + field.getName() + " is null.");
                             return false;
                         }
                     } catch (IllegalArgumentException ex) {

@@ -24,6 +24,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.util.io.Closer;
 import com.sk89q.worldedit.util.io.file.FilenameException;
 import com.sk89q.worldedit.world.registry.WorldData;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mc.alk.arena.plugins.worldedit.WorldEditUtil;
 import mc.alk.arena.plugins.worldguard.WorldGuardAbstraction;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
@@ -162,5 +164,18 @@ public class WG extends WorldGuardAbstraction {
             Logger.getLogger(WG.class.getName()).log(Level.SEVERE, null, ex);
         }
         return true;
+    }
+    
+    @Override
+    public void deleteRegion(String worldName, String id) {
+        World w = Bukkit.getWorld(worldName);
+        if (w == null) {
+            return;
+        }
+        RegionManager mgr = wgp.getRegionManager(w);
+        if (mgr == null) {
+            return;
+        }
+        mgr.removeRegion(id);
     }
 }

@@ -7,6 +7,7 @@ import mc.alk.arena.controllers.plugins.WorldGuardController;
 import mc.alk.arena.objects.exceptions.RegionNotFound;
 import mc.alk.arena.objects.regions.WorldGuardRegion;
 import mc.alk.arena.plugins.worldguard.WorldGuardInterface;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -25,7 +26,7 @@ public class WorldGuardUtil {
     public static boolean hasWorldGuard = false;
 
     public static boolean hasWorldGuard() {
-        return hasWorldGuard;
+        return Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     }
 
     public static ProtectedRegion getRegion(String world, String id) {

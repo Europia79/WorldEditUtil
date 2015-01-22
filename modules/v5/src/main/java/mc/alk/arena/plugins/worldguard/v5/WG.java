@@ -18,10 +18,12 @@ import com.sk89q.worldedit.commands.SchematicCommands;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.schematic.SchematicFormat;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import java.io.File;
 import java.io.IOException;
 import mc.alk.arena.plugins.worldedit.WorldEditUtil;
 import mc.alk.arena.plugins.worldguard.WorldGuardAbstraction;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -140,14 +142,6 @@ public class WG extends WorldGuardAbstraction {
         return true;
     }
 
-    private void printError(LocalPlayer player, String msg) {
-        if (player == null) {
-            System.out.println(msg);
-        } else {
-            player.printError(msg);
-        }
-    }
-
     public class ConsolePlayer extends BukkitCommandSender {
 
         LocalWorld world;
@@ -166,6 +160,19 @@ public class WG extends WorldGuardAbstraction {
         public LocalWorld getWorld() {
             return world;
         }
+    }
+    
+    @Override
+    public void deleteRegion(String worldName, String id) {
+        World w = Bukkit.getWorld(worldName);
+        if (w == null) {
+            return;
+        }
+        RegionManager mgr = wgp.getRegionManager(w);
+        if (mgr == null) {
+            return;
+        }
+        mgr.removeRegion(id);
     }
 
 }

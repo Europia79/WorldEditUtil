@@ -1,6 +1,5 @@
 package mc.alk.arena.util.plugins;
 
-import mc.alk.arena.util.*;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import mc.alk.arena.controllers.plugins.WorldGuardController;
@@ -8,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 /**
- * Use mc.alk.arena.util.plugins.WorldEditUtil instead
+ * Use mc.alk.arena.util.plugins.WorldEditUtil instead.
  * @author alkarin
  *
  */

@@ -5,6 +5,7 @@ import com.sk89q.worldedit.bukkit.selections.Polygonal2DSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.GlobalRegionManager;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
@@ -37,20 +38,25 @@ import org.bukkit.plugin.Plugin;
  */
 public abstract class WorldGuardAbstraction extends WorldGuardInterface {
     
-    WorldGuardPlugin wgp;
-    boolean hasWorldGuard = false;
+    protected final WorldGuardPlugin wgp = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+    boolean hasWorldGuard = (wgp != null);
 
     Map<String, Set<String>> trackedRegions = new ConcurrentHashMap<String, Set<String>>();
     
+    /**
+     * Provides legacy support.
+     */
     @Override
     public boolean setWorldGuard(Plugin plugin) {
-        wgp = (WorldGuardPlugin) plugin;
-        hasWorldGuard = true;
+        if (plugin != null) {
+            hasWorldGuard = true;
+        }
         return hasWorldGuard();
     }
 
     @Override
     public boolean hasWorldGuard() {
+        
         return WorldEditUtil.hasWorldEdit() && hasWorldGuard;
     }
 
@@ -102,8 +108,9 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
     private ProtectedRegion createRegion(Player p, String id) throws Exception {
         Selection sel = WorldEditUtil.getSelection(p);
         World w = sel.getWorld();
-        RegionManager mgr = wgp.getGlobalRegionManager().get(w);
-        mgr.removeRegion(id);
+        GlobalRegionManager gmanager = wgp.getGlobalRegionManager();
+        RegionManager regionManager = gmanager.get(w);
+        deleteRegion(w.getName(), id);
         ProtectedRegion region;
         // Detect the type of region from WorldEdit
         if (sel instanceof Polygonal2DSelection) {
@@ -118,8 +125,8 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
         }
         region.setPriority(11); /// some relatively high priority
         region.setFlag(DefaultFlag.PVP, StateFlag.State.ALLOW);
-        wgp.getRegionManager(w).addRegion(region);
-        mgr.save();
+        regionManager.addRegion(region);
+        regionManager.save();
         return region;
     }
 
@@ -261,21 +268,8 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
         pr.setMembers(dd);
         return true;
     }
-
-    @Override
-    public void deleteRegion(String worldName, String id) {
-        World w = Bukkit.getWorld(worldName);
-        if (w == null) {
-            return;
-        }
-        RegionManager mgr = wgp.getRegionManager(w);
-        if (mgr == null) {
-            return;
-        }
-        mgr.removeRegion(id);
-    }
-
-    private void printError(LocalPlayer player, String msg) {
+    
+    protected void printError(LocalPlayer player, String msg) {
         if (player == null) {
             System.out.println(msg);
         } else {

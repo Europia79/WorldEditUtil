@@ -28,6 +28,11 @@ public class WG extends WorldGuardInterface {
         return false;
     }
 
+    /**
+     * Even if getPlugin("WorldGuard"); does not equal null, the plugin 
+     * may not be fully intialized.
+     * @return Always returns false.
+     */
     @Override
     public boolean hasWorldGuard() {
         return false;

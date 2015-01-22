@@ -5,6 +5,7 @@ import mc.alk.arena.objects.regions.ArenaRegion;
 import mc.alk.arena.objects.regions.WorldGuardRegion;
 import mc.alk.arena.plugins.worldedit.WorldEditUtil;
 import mc.alk.arena.plugins.worldguard.WorldGuardInterface;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -37,11 +38,11 @@ public class WorldGuardController {
     }
 
     public static boolean hasWorldGuard() {
-        return hasWorldGuard;
+        return Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     }
 
     public static boolean hasWorldEdit() {
-        return hasWorldEdit;
+        return Bukkit.getPluginManager().getPlugin("WorldEdit") != null;
     }
 
     public boolean addRegion(Player sender, String id) throws Exception {
