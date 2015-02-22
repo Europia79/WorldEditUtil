@@ -2,6 +2,7 @@ package mc.alk.arena.plugins.worldguard.v6;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.EmptyClipboardException;
+import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.LocalWorld;
@@ -17,22 +18,30 @@ import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
+import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.util.io.Closer;
 import com.sk89q.worldedit.util.io.file.FilenameException;
+import com.sk89q.worldedit.world.registry.LegacyWorldData;
 import com.sk89q.worldedit.world.registry.WorldData;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import mc.alk.arena.plugins.worldedit.WorldEditUtil;
 import mc.alk.arena.plugins.worldguard.WorldGuardAbstraction;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -47,27 +56,47 @@ import org.bukkit.command.CommandSender;
  * @author Nikolai
  */
 public class WG extends WorldGuardAbstraction {
+	@Override
+   	public boolean saveSchematic(Player p, String schematicName) {
+	    WorldEditPlugin wep = WorldEditUtil.getWorldEditPlugin();
+	    LocalSession session = wep.getSession(p);
+	    com.sk89q.worldedit.entity.Player player = wep.wrapPlayer(p);
+	    EditSession editSession = session.createEditSession(player);
+	    Closer closer = Closer.create();
+	    try {
+	    	Region region = session.getSelection(player.getWorld());
+	        Clipboard cb = new BlockArrayClipboard(region);
+	        ForwardExtentCopy copy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
+	        Operations.completeLegacy(copy);
+	        File f = new File(wep.getDataFolder(), "schematics" + File.separator +
+	        		schematicName + ".schematic");
+	        File parent = f.getParentFile();
+	        if (parent != null && !parent.exists()) {
+	        	if (!parent.mkdirs()) {
+	        		throw new IOException("Could not make parent directory!");
+	        	}
+	        }
+	        f.createNewFile();
 
-    @Override
-    public boolean saveSchematic(org.bukkit.entity.Player p, String schematicName) {
-        WorldEditPlugin wep = WorldEditUtil.getWorldEditPlugin();
-        final LocalSession session = wep.getSession(p);
-        final Player player = wep.wrapPlayer(p);
-        EditSession editSession = session.createEditSession(player);
-        try {
-            Region region = session.getSelection(player.getWorld());
-            Clipboard cb = new BlockArrayClipboard(region);
-            WorldData worldData = editSession.getWorld().getWorldData();
-            ClipboardHolder clipboardHolder = new ClipboardHolder(cb, worldData);
-            session.setClipboard(clipboardHolder);
-            SchematicCommands sc = new SchematicCommands(wep.getWorldEdit());
-            // sc.save() is deprecated
-            sc.save(player, session, "mcedit", schematicName);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+	        FileOutputStream fos = closer.register(new FileOutputStream(f));
+	        BufferedOutputStream bos = closer.register(new BufferedOutputStream(fos));
+	        ClipboardWriter writer = closer.register(ClipboardFormat.SCHEMATIC.getWriter(bos));
+	        writer.write(cb, LegacyWorldData.getInstance());
+	        return true;
+	        } catch (IOException ex) {
+	        	ex.printStackTrace();
+	        } catch (IncompleteRegionException e) {
+	        	e.printStackTrace();
+	        } catch (MaxChangedBlocksException e) {
+	        	e.printStackTrace();
+			} finally {
+				try {
+					closer.close();
+				} catch (IOException ignore) {
+				}
+	        }
+	        return false;
+	        }
     }
 
     /**
