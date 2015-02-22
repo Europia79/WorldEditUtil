@@ -58,7 +58,7 @@ import org.bukkit.command.CommandSender;
 public class WG extends WorldGuardAbstraction {
 	@Override
    	public boolean saveSchematic(Player p, String schematicName) {
-		WorldEditPlugin wep = getWorldEdit();
+	    WorldEditPlugin wep = WorldEditUtil.getWorldEditPlugin();
 	    LocalSession session = wep.getSession(p);
 	    com.sk89q.worldedit.entity.Player player = wep.wrapPlayer(p);
 	    EditSession editSession = session.createEditSession(player);
