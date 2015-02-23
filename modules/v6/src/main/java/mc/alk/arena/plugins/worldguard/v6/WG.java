@@ -11,8 +11,6 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.command.SchematicCommands;
-import com.sk89q.worldedit.entity.Player;
 import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -48,59 +46,59 @@ import org.bukkit.command.CommandSender;
 
 /**
  * The WorldEdit v6.x implementation.
- * 
+ *
  * Why does this exist under the WorldGuard Utilities ?
  * Because intention of saveSchematic() is really saveRegion().
  * And the intention of pasteSchematic() is really resetRegion().
  *
- * @author Nikolai
+ * @author Alkarinv, Europia79, Paaattiii
  */
 public class WG extends WorldGuardAbstraction {
-	@Override
-   	public boolean saveSchematic(Player p, String schematicName) {
-	    WorldEditPlugin wep = WorldEditUtil.getWorldEditPlugin();
-	    LocalSession session = wep.getSession(p);
-	    com.sk89q.worldedit.entity.Player player = wep.wrapPlayer(p);
-	    EditSession editSession = session.createEditSession(player);
-	    Closer closer = Closer.create();
-	    try {
-	    	Region region = session.getSelection(player.getWorld());
-	        Clipboard cb = new BlockArrayClipboard(region);
-	        ForwardExtentCopy copy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
-	        Operations.completeLegacy(copy);
-	        File f = new File(wep.getDataFolder(), "schematics" + File.separator +
-	        		schematicName + ".schematic");
-	        File parent = f.getParentFile();
-	        if (parent != null && !parent.exists()) {
-	        	if (!parent.mkdirs()) {
-	        		throw new IOException("Could not make parent directory!");
-	        	}
-	        }
-	        f.createNewFile();
 
-	        FileOutputStream fos = closer.register(new FileOutputStream(f));
-	        BufferedOutputStream bos = closer.register(new BufferedOutputStream(fos));
-	        ClipboardWriter writer = closer.register(ClipboardFormat.SCHEMATIC.getWriter(bos));
-	        writer.write(cb, LegacyWorldData.getInstance());
-	        return true;
-	        } catch (IOException ex) {
-	        	ex.printStackTrace();
-	        } catch (IncompleteRegionException e) {
-	        	e.printStackTrace();
-	        } catch (MaxChangedBlocksException e) {
-	        	e.printStackTrace();
-			} finally {
-				try {
-					closer.close();
-				} catch (IOException ignore) {
-				}
-	        }
-	        return false;
-	        }
+    @Override
+    public boolean saveSchematic(org.bukkit.entity.Player p, String schematicName) {
+        WorldEditPlugin wep = WorldEditUtil.getWorldEditPlugin();
+        LocalSession session = wep.getSession(p);
+        com.sk89q.worldedit.entity.Player player = wep.wrapPlayer(p);
+        EditSession editSession = session.createEditSession(player);
+        Closer closer = Closer.create();
+        try {
+            Region region = session.getSelection(player.getWorld());
+            Clipboard cb = new BlockArrayClipboard(region);
+            ForwardExtentCopy copy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
+            Operations.completeLegacy(copy);
+            LocalConfiguration config = wep.getWorldEdit().getConfiguration();
+            File dir = wep.getWorldEdit().getWorkingDirectoryFile(config.saveDir);
+            if (!dir.exists()) {
+                if (!dir.mkdirs()) {
+                    throw new IOException("Could not create directory " + config.saveDir);
+                }
+            }
+            File schematicFile = new File(dir, schematicName + ".schematic");
+            schematicFile.createNewFile();
+
+            FileOutputStream fos = closer.register(new FileOutputStream(schematicFile));
+            BufferedOutputStream bos = closer.register(new BufferedOutputStream(fos));
+            ClipboardWriter writer = closer.register(ClipboardFormat.SCHEMATIC.getWriter(bos));
+            writer.write(cb, LegacyWorldData.getInstance());
+            return true;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (IncompleteRegionException e) {
+            e.printStackTrace();
+        } catch (MaxChangedBlocksException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                closer.close();
+            } catch (IOException ignore) {
+            }
+        }
+        return false;
     }
 
     /**
-     * Error: LocalPlayer bsc = new ConsolePlayer(); 
+     * Error: LocalPlayer bsc = new ConsolePlayer();
      */
     @Override
     public boolean pasteSchematic(CommandSender sender, Vector position, String schematic, World world) {
@@ -194,7 +192,7 @@ public class WG extends WorldGuardAbstraction {
         }
         return true;
     }
-    
+
     @Override
     public void deleteRegion(String worldName, String id) {
         World w = Bukkit.getWorld(worldName);
