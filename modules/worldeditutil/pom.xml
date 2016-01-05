@@ -11,7 +11,7 @@
     -->
     <groupId>mc.alk</groupId>
     <artifactId>worldeditutil</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <packaging>jar</packaging>
     <name>WorldEditUtil</name>
     <url>http://github.com/Europia79/WorldEditUtil</url>
@@ -70,6 +70,12 @@
             <version>parent</version>
         </dependency>
     </dependencies>
+    <distributionManagement>
+      <repository>
+        <id>rainbowcraft-repo</id>
+        <url>scp://rainbowcraft.sytes.net/var/www/maven/repository</url>
+      </repository>
+    </distributionManagement>
     <build>
         <finalName>WorldEditUtil</finalName>
         <directory>../../target</directory>
@@ -78,14 +84,14 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh</artifactId>
-                <version>2.4</version>
+                <version>2.10</version>
             </extension>
         </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.7</version>
+                <version>2.8.2</version>
                 <configuration>
                     <skip>false</skip>
                 </configuration>
@@ -125,10 +131,37 @@
             </plugin>
         </plugins>
     </build>
-    <distributionManagement>
-      <repository>
-        <id>rainbowcraft-repo</id>
-        <url>scp://23.29.127.102/var/www/maven/repository</url>
-      </repository>
-    </distributionManagement>
 </project>
+<!-- If you use this module, then include the following to shade it into your final JAR:
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>mc.alk.arena</pattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <artifactSet>
+                                <includes>
+                                    <include>mc.alk:worldeditutil</include>
+                                </includes>
+                            </artifactSet>
+                            <minimizeJar>true</minimizeJar>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+-->

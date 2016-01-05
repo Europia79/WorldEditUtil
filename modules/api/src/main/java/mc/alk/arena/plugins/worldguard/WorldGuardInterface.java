@@ -70,9 +70,9 @@ public abstract class WorldGuardInterface {
             }
         };
         boolean wgIsInitialized = tester.isEnabled(wgp);
-        if (we.isCompatible("6") && wg.isEnabled() && wgIsInitialized) {
+        if (we.isCompatible("6") && wg.isCompatible("6") && wgIsInitialized) {
             WGI = instantiate("v6");
-        } else if (we.isCompatible("5") && wg.isEnabled() && wgIsInitialized) {
+        } else if (we.isCompatible("5") && we.isLessThan("6") && wg.isCompatible("5") && wg.isLessThan("6")&& wgIsInitialized) {
             WGI = instantiate("v5");
         } else {
             // Not present, not compatible, or not supported.
