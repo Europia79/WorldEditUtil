@@ -1,4 +1,4 @@
-package mc.alk.arena.plugins.worldedit;
+package mc.alk.worldeditutil.controllers;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -12,7 +12,7 @@ import org.bukkit.plugin.Plugin;
  * @author alkarin
  *
  */
-public class WorldEditUtil {
+public class WorldEditController {
 
     public static WorldEditPlugin wep = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
 

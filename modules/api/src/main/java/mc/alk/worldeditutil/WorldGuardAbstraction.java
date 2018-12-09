@@ -1,4 +1,4 @@
-package mc.alk.arena.plugins.worldguard;
+package mc.alk.worldeditutil;
 
 import com.sk89q.worldedit.LocalPlayer;
 import com.sk89q.worldedit.bukkit.selections.Polygonal2DSelection;
@@ -20,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import mc.alk.arena.objects.exceptions.RegionNotFound;
 import mc.alk.arena.objects.regions.ArenaRegion;
 import mc.alk.arena.objects.regions.WorldGuardRegion;
-import mc.alk.arena.plugins.worldedit.WorldEditUtil;
+import mc.alk.worldeditutil.controllers.WorldEditController;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -57,7 +57,7 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
     @Override
     public boolean hasWorldGuard() {
         
-        return WorldEditUtil.hasWorldEdit() && hasWorldGuard;
+        return WorldEditController.hasWorldEdit() && hasWorldGuard;
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
     }
 
     private ProtectedRegion createRegion(Player p, String id) throws Exception {
-        Selection sel = WorldEditUtil.getSelection(p);
+        Selection sel = WorldEditController.getSelection(p);
         World w = sel.getWorld();
         GlobalRegionManager gmanager = wgp.getGlobalRegionManager();
         RegionManager regionManager = gmanager.get(w);

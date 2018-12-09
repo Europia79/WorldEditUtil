@@ -6,7 +6,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import mc.alk.arena.controllers.plugins.WorldGuardController;
 import mc.alk.arena.objects.exceptions.RegionNotFound;
 import mc.alk.arena.objects.regions.WorldGuardRegion;
-import mc.alk.arena.plugins.worldguard.WorldGuardInterface;
+import mc.alk.worldeditutil.WorldGuardInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

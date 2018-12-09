@@ -37,8 +37,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mc.alk.arena.plugins.worldedit.WorldEditUtil;
-import mc.alk.arena.plugins.worldguard.WorldGuardAbstraction;
+import mc.alk.worldeditutil.controllers.WorldEditController;
+import mc.alk.worldeditutil.WorldGuardAbstraction;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -57,7 +57,7 @@ public class WG extends WorldGuardAbstraction {
 
     @Override
     public boolean saveSchematic(org.bukkit.entity.Player p, String schematicName) {
-        WorldEditPlugin wep = WorldEditUtil.getWorldEditPlugin();
+        WorldEditPlugin wep = WorldEditController.getWorldEditPlugin();
         LocalSession session = wep.getSession(p);
         com.sk89q.worldedit.entity.Player player = wep.wrapPlayer(p);
         EditSession editSession = session.createEditSession(player);
@@ -102,7 +102,7 @@ public class WG extends WorldGuardAbstraction {
      */
     @Override
     public boolean pasteSchematic(CommandSender sender, Vector position, String schematic, World world) {
-        final WorldEditPlugin wep = WorldEditUtil.getWorldEditPlugin();
+        final WorldEditPlugin wep = WorldEditController.getWorldEditPlugin();
         final WorldEdit we = wep.getWorldEdit();
         // LocalPlayer bcs = new ConsolePlayer(wep, wep.getServerInterface(), sender, world);
         Actor actor = wep.wrapCommandSender(sender);

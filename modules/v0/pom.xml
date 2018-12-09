@@ -8,41 +8,41 @@
         <relativePath>../../</relativePath>
     </parent>
     <groupId>mc.alk</groupId>
-    <artifactId>worldeditutil-v6</artifactId>
+    <artifactId>worldeditutil-v0</artifactId>
     <version>parent</version>
-    <name>WorldEditUtil_v6</name>
+    <name>WorldEditUtil_v0</name>
     <packaging>jar</packaging>
     <properties>
         <maven.build.timestamp.format>MMdd</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <version>1.7.2-R0.3</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>5.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>5.8.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>worldeditutil-api</artifactId>
             <version>parent</version>
         </dependency>
-        <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldedit</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldguard</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
     <build>
-        <finalName>WorldEditUtil-Bukkit_v6</finalName>
+        <finalName>WorldEditUtil-Bukkit_v5</finalName>
         <directory>./target</directory>
         <sourceDirectory>./src/main/java</sourceDirectory>
         <plugins>

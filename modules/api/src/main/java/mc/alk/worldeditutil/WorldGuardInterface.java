@@ -1,4 +1,4 @@
-package mc.alk.arena.plugins.worldguard;
+package mc.alk.worldeditutil;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import mc.alk.arena.objects.exceptions.RegionNotFound;
 import mc.alk.arena.objects.regions.ArenaRegion;
 import mc.alk.arena.objects.regions.WorldGuardRegion;
+import mc.euro.version.FieldTester;
 import mc.euro.version.Tester;
 import mc.euro.version.Version;
 import mc.euro.version.VersionFactory;
@@ -46,30 +47,7 @@ public abstract class WorldGuardInterface {
         Version<Plugin> we = VersionFactory.getPluginVersion("WorldEdit");
         Version<Plugin> wg = VersionFactory.getPluginVersion("WorldGuard");
         WorldGuardPlugin wgp = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
-        Tester<WorldGuardPlugin> tester = new Tester<WorldGuardPlugin>() {
-
-            @Override
-            public boolean isEnabled(WorldGuardPlugin wgp) {
-                if (wgp == null) return false;
-                Field[] fields = wgp.getClass().getDeclaredFields();
-                for (Field field : fields) {
-                    field.setAccessible(true);
-                    try {
-                        if (field.get(wgp) == null) {
-                            System.out.println("[BattleArena] WorldGuard is not fully initialized.");
-                            System.out.println("[BattleArena] WorldGuard field " + field.getName() + " is null.");
-                            return false;
-                        }
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(WorldGuardInterface.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IllegalAccessException ex) {
-                        Logger.getLogger(WorldGuardInterface.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                return true;
-            }
-        };
-        boolean wgIsInitialized = tester.isEnabled(wgp);
+        boolean wgIsInitialized = FieldTester.<WorldGuardPlugin>isInitialized(wgp);
         if (we.isCompatible("6") && wg.isCompatible("6") && wgIsInitialized) {
             WGI = instantiate("v6");
         } else if (we.isCompatible("5") && we.isLessThan("6") && wg.isCompatible("5") && wg.isLessThan("6")&& wgIsInitialized) {

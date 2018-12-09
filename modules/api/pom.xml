@@ -39,8 +39,8 @@
         <dependency>
             <groupId>mc.euro</groupId>
             <artifactId>Version</artifactId>
-            <version>1.1.1</version>
-            <scope>compile</scope>
+            <version>4.0.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
@@ -53,36 +53,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>mc.euro.version</pattern>
-                                    <shadedPattern>mc.alk.arena.version</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <artifactSet>
-                                <includes>
-                                    <include>mc.euro:Version</include>
-                                </includes>
-                            </artifactSet>
-                            <minimizeJar>true</minimizeJar>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -23,11 +23,11 @@ public class WorldEditUtil {
     }
 
     public static Selection getSelection(Player player) {
-        return mc.alk.arena.plugins.worldedit.WorldEditUtil.getSelection(player);
+        return mc.alk.worldeditutil.controllers.WorldEditController.getSelection(player);
     }
 
     public static WorldEditPlugin getWorldEditPlugin() {
-        return mc.alk.arena.plugins.worldedit.WorldEditUtil.getWorldEditPlugin();
+        return mc.alk.worldeditutil.controllers.WorldEditController.getWorldEditPlugin();
     }
 
 }
