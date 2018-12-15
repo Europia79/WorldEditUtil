@@ -1,12 +1,14 @@
 package mc.alk.arena.plugins.worldguard.v0;
 
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import mc.alk.arena.objects.exceptions.RegionNotFound;
 import mc.alk.arena.objects.regions.ArenaRegion;
 import mc.alk.arena.objects.regions.WorldGuardRegion;
+import mc.alk.worldeditutil.math.BlockSelection;
+import mc.alk.worldeditutil.math.BlockVector;
 import mc.alk.worldeditutil.WorldGuardInterface;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -16,9 +18,9 @@ import org.bukkit.plugin.Plugin;
 
 /**
  * Fixes NoClassDefFound caused by ClassNotFoundException.
- * This is an implementation where Worldguard 
+ * This is an implementation where Worldguard
  * is not installed, not compatible, or not supported.
- * 
+ *
  * @author Nikolai
  */
 public class WG extends WorldGuardInterface {
@@ -29,7 +31,7 @@ public class WG extends WorldGuardInterface {
     }
 
     /**
-     * Even if getPlugin("WorldGuard"); does not equal null, the plugin 
+     * Even if getPlugin("WorldGuard"); does not equal null, the plugin
      * may not be fully intialized.
      * @return Always returns false.
      */
@@ -189,9 +191,9 @@ public class WG extends WorldGuardInterface {
     public boolean pasteSchematic(CommandSender sender, ProtectedRegion pr, String schematic, World world) {
         return false;
     }
-    
+
     @Override
-    public boolean pasteSchematic(CommandSender sender, Vector position, String schematic, World world) {
+    public boolean pasteSchematic(CommandSender sender, BlockVector position, String schematic, World world) {
         return false;
     }
 
@@ -199,5 +201,19 @@ public class WG extends WorldGuardInterface {
     public boolean saveSchematic(Player p, String schematicName) {
         return false;
     }
-    
+
+    @Override
+    public Region getWorldEditRegion(Player p) {
+        return null;
+    }
+
+    @Override
+    public BlockSelection getBlockSelection(Region region) {
+        return null;
+    }
+
+    @Override
+    public BlockSelection getBlockSelection(World world, ProtectedRegion region) {
+        return null;
+    }
 }

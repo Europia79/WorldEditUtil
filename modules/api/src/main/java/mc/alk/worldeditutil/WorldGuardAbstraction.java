@@ -1,17 +1,8 @@
 package mc.alk.worldeditutil;
 
-import com.sk89q.worldedit.LocalPlayer;
-import com.sk89q.worldedit.bukkit.selections.Polygonal2DSelection;
-import com.sk89q.worldedit.bukkit.selections.Selection;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.GlobalRegionManager;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
-import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.Map;
 import java.util.Set;
@@ -32,17 +23,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 /**
- * 
- * 
+ *
+ *
  * @author alkarin
  */
 public abstract class WorldGuardAbstraction extends WorldGuardInterface {
-    
+
     protected final WorldGuardPlugin wgp = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
     boolean hasWorldGuard = (wgp != null);
 
     Map<String, Set<String>> trackedRegions = new ConcurrentHashMap<String, Set<String>>();
-    
+
     /**
      * Provides legacy support.
      */
@@ -56,7 +47,7 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
 
     @Override
     public boolean hasWorldGuard() {
-        
+
         return WorldEditController.hasWorldEdit() && hasWorldGuard;
     }
 
@@ -67,67 +58,9 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
     }
 
     @Override
-    public ProtectedRegion getRegion(World w, String id) {
-        if (w == null) {
-            return null;
-        }
-        return wgp.getRegionManager(w).getRegion(id);
-    }
-
-    @Override
     public boolean hasRegion(ArenaRegion region) {
+
         return hasRegion(region.getWorldName(), region.getID());
-    }
-
-    @Override
-    public boolean hasRegion(World world, String id) {
-        RegionManager mgr = wgp.getGlobalRegionManager().get(world);
-        return mgr.hasRegion(id);
-    }
-
-    @Override
-    public boolean hasRegion(String world, String id) {
-        World w = Bukkit.getWorld(world);
-        if (w == null) {
-            return false;
-        }
-        RegionManager mgr = wgp.getGlobalRegionManager().get(w);
-        return mgr.hasRegion(id);
-    }
-
-    @Override
-    public ProtectedRegion updateProtectedRegion(Player p, String id) throws Exception {
-        return createRegion(p, id);
-    }
-
-    @Override
-    public ProtectedRegion createProtectedRegion(Player p, String id) throws Exception {
-        return createRegion(p, id);
-    }
-
-    private ProtectedRegion createRegion(Player p, String id) throws Exception {
-        Selection sel = WorldEditController.getSelection(p);
-        World w = sel.getWorld();
-        GlobalRegionManager gmanager = wgp.getGlobalRegionManager();
-        RegionManager regionManager = gmanager.get(w);
-        deleteRegion(w.getName(), id);
-        ProtectedRegion region;
-        // Detect the type of region from WorldEdit
-        if (sel instanceof Polygonal2DSelection) {
-            Polygonal2DSelection polySel = (Polygonal2DSelection) sel;
-            int minY = polySel.getNativeMinimumPoint().getBlockY();
-            int maxY = polySel.getNativeMaximumPoint().getBlockY();
-            region = new ProtectedPolygonalRegion(id, polySel.getNativePoints(), minY, maxY);
-        } else { /// default everything to cuboid
-            region = new ProtectedCuboidRegion(id,
-                    sel.getNativeMinimumPoint().toBlockVector(),
-                    sel.getNativeMaximumPoint().toBlockVector());
-        }
-        region.setPriority(11); /// some relatively high priority
-        region.setFlag(DefaultFlag.PVP, StateFlag.State.ALLOW);
-        regionManager.addRegion(region);
-        regionManager.save();
-        return region;
     }
 
     @Override
@@ -171,26 +104,6 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
     @Override
     public boolean setFlag(WorldGuardRegion region, String flag, boolean enable) {
         return setFlag(region.getRegionWorld(), region.getID(), flag, enable);
-    }
-
-    @Override
-    public Flag<?> getWGFlag(String flagString) {
-        for (Flag<?> f : DefaultFlag.getFlags()) {
-            if (f.getName().equalsIgnoreCase(flagString)) {
-                return f;
-            }
-        }
-        throw new IllegalStateException("Worldguard flag " + flagString + " not found");
-    }
-
-    @Override
-    public StateFlag getStateFlag(String flagString) {
-        for (Flag<?> f : DefaultFlag.getFlags()) {
-            if (f.getName().equalsIgnoreCase(flagString) && f instanceof StateFlag) {
-                return (StateFlag) f;
-            }
-        }
-        throw new IllegalStateException("Worldguard flag " + flagString + " not found");
     }
 
     @Override
@@ -268,14 +181,6 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
         pr.setMembers(dd);
         return true;
     }
-    
-    protected void printError(LocalPlayer player, String msg) {
-        if (player == null) {
-            System.out.println(msg);
-        } else {
-            player.printError(msg);
-        }
-    }
 
     @Override
     public boolean contains(Location location, WorldGuardRegion region) {
@@ -351,12 +256,12 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
         }
         return null;
     }
-    
+
     @Override
     public boolean pasteSchematic(WorldGuardRegion region) {
         return pasteSchematic(region.getRegionWorld(), region.getID());
     }
-    
+
     @Override
     public boolean pasteSchematic(String worldName, String id) {
         return pasteSchematic(Bukkit.getConsoleSender(), worldName, id);
@@ -371,10 +276,4 @@ public abstract class WorldGuardAbstraction extends WorldGuardInterface {
         ProtectedRegion pr = getRegion(w, id);
         return pr != null && pasteSchematic(consoleSender, pr, id, w);
     }
-    
-    @Override
-    public boolean pasteSchematic(CommandSender sender, ProtectedRegion pr, String schematic, World world) {
-        return pasteSchematic(sender, pr.getMinimumPoint(), schematic, world);
-    }
-    
 }

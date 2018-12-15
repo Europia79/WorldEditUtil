@@ -1,19 +1,17 @@
 package mc.alk.worldeditutil;
 
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mc.alk.arena.objects.exceptions.RegionNotFound;
 import mc.alk.arena.objects.regions.ArenaRegion;
 import mc.alk.arena.objects.regions.WorldGuardRegion;
+import mc.alk.worldeditutil.math.BlockSelection;
+import mc.alk.worldeditutil.math.BlockVector;
 import mc.euro.version.FieldTester;
-import mc.euro.version.Tester;
 import mc.euro.version.Version;
 import mc.euro.version.VersionFactory;
 import org.bukkit.Bukkit;
@@ -24,22 +22,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 /**
- * We want to always reference an abstraction of WorldGuard and have the 
+ * We want to always reference an abstraction of WorldGuard and have the
  * actual implementation decided at runtime: v0, v5, v6. <br/><br/>
- * 
+ *
  * v0 = WorldEdit not installed, not compatible, or not supported. <br/>
- * v0 = vZero, not vOH.
- * 
+ * v5 = vZero, not vOH.
+ *
  * This class was a conversion from the static wrapper WorldGuardUtil.
  * Converted to an abstraction so that our implementation can vary at runtime.
  *
  * @author alkarin, Nikolai
  */
 public abstract class WorldGuardInterface {
-    
+
     /**
      * Instantiates: mc.alk.arena.plugins.worldguard.{version}.WG.
-     * 
+     *
      * Based on the version of WorldEdit that the server has.
      */
     public static WorldGuardInterface newInstance() {
@@ -47,10 +45,13 @@ public abstract class WorldGuardInterface {
         Version<Plugin> we = VersionFactory.getPluginVersion("WorldEdit");
         Version<Plugin> wg = VersionFactory.getPluginVersion("WorldGuard");
         WorldGuardPlugin wgp = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
-        boolean wgIsInitialized = FieldTester.<WorldGuardPlugin>isInitialized(wgp);
-        if (we.isCompatible("6") && wg.isCompatible("6") && wgIsInitialized) {
+
+        boolean wgIsInitialized = FieldTester.isInitialized(wgp);
+        if (we.isCompatible("7") && wg.isCompatible("7") && wgIsInitialized) {
+            WGI = instantiate("v7");
+        } else if (we.isCompatible("6") && wg.isLessThan("7") && wg.isCompatible("6") && wg.isLessThan("7") && wgIsInitialized) {
             WGI = instantiate("v6");
-        } else if (we.isCompatible("5") && we.isLessThan("6") && wg.isCompatible("5") && wg.isLessThan("6")&& wgIsInitialized) {
+        } else if (we.isCompatible("5") && we.isLessThan("6") && wg.isCompatible("5") && wg.isLessThan("6") && wgIsInitialized) {
             WGI = instantiate("v5");
         } else {
             // Not present, not compatible, or not supported.
@@ -59,7 +60,7 @@ public abstract class WorldGuardInterface {
         }
         return WGI;
     }
-    
+
     /**
      * Instantiates: mc.alk.arena.plugins.worldguard.{version}.WG.
      */
@@ -78,7 +79,7 @@ public abstract class WorldGuardInterface {
         }
         return WGI;
     }
-    
+
     public abstract boolean setWorldGuard(Plugin plugin);
 
     public abstract boolean hasWorldGuard();
@@ -145,8 +146,13 @@ public abstract class WorldGuardInterface {
 
     public abstract boolean pasteSchematic(CommandSender sender, ProtectedRegion pr, String schematic, World world);
 
-    public abstract boolean pasteSchematic(CommandSender sender, Vector position, String schematic, World world);
+    public abstract boolean pasteSchematic(CommandSender sender, BlockVector position, String schematic, World world);
 
     public abstract boolean saveSchematic(Player p, String schematicName);
 
+    public abstract Region getWorldEditRegion(Player p);
+
+    public abstract BlockSelection getBlockSelection(Region region);
+
+    public abstract BlockSelection getBlockSelection(World world, ProtectedRegion region);
 }

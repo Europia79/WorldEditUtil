@@ -33,5 +33,5 @@ public class WorldEditController {
     public static WorldEditPlugin getWorldEditPlugin() {
         return wep;
     }
-    
+
 }
