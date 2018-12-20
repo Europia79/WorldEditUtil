@@ -1,9 +1,12 @@
 package mc.alk.worldeditutil.controllers;
 
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import mc.alk.arena.objects.exceptions.RegionNotFound;
 import mc.alk.arena.objects.regions.ArenaRegion;
 import mc.alk.arena.objects.regions.WorldGuardRegion;
 import mc.alk.worldeditutil.WorldGuardInterface;
+import mc.alk.worldeditutil.math.BlockSelection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -24,9 +27,9 @@ public class WorldGuardController {
 
     static boolean hasWorldGuard = false;
     static boolean hasWorldEdit = false;
-    
+
     public static final WorldGuardInterface wg = WorldGuardInterface.newInstance();
-    
+
     public static class WorldGuardException extends Exception {
 
         private static final long serialVersionUID = 1L;
@@ -166,5 +169,17 @@ public class WorldGuardController {
 
     public static boolean trackRegion(String world, String id) throws RegionNotFound {
         return wg.trackRegion(world, id);
+    }
+
+    public static Region getWorldEditRegion(Player player) {
+        return wg.getWorldEditRegion(player);
+    }
+
+    public static BlockSelection getBlockSelection(Region region) {
+        return wg.getBlockSelection(region);
+    }
+
+    public static BlockSelection getBlockSelection(World world, ProtectedRegion region) {
+        return wg.getBlockSelection(world, region);
     }
 }

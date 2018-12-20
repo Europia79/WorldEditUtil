@@ -18,6 +18,7 @@
         <module>modules/v0</module>
         <module>modules/v5</module>
         <module>modules/v6</module>
+        <module>modules/v7</module>
         <module>modules/worldeditutil</module>
     </modules>
     <repositories>
@@ -40,10 +41,6 @@
         <repository>
             <id>vault-repo</id>
             <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-        </repository>
-        <repository>
-            <id>kitteh-repo</id>
-            <url>http://repo.kitteh.org/content/repositories/public/</url>
         </repository>
     </repositories>
     <distributionManagement>
