@@ -12,11 +12,6 @@
     <version>parent</version>
     <packaging>jar</packaging>
     <name>WorldEditUtil_API</name>
-    <url>https://github.com/Europia79</url>
-    <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
@@ -39,7 +34,6 @@
         <dependency>
             <groupId>mc.euro</groupId>
             <artifactId>Version</artifactId>
-            <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -51,10 +45,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven.deploy.version}</version>
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
